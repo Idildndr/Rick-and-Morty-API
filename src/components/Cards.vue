@@ -115,34 +115,36 @@ watch(page, async () => {
 </template>
 
 <style scoped>
+
 .container {
   background-color: black;
   color: #2c3e50;
-  margin: 0px 10px;
+  margin: 0px 4px;
 }
+
 .cards {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Set a minimum width for the cards */
   grid-template-rows: 1fr;
-  justify-content:center; /* or justify-content: space-between; */
+  gap: 5px; /* Add some gap between cards */
+  justify-content: center;
   cursor: pointer;
- 
 }
+
 .cards h3 {
   font-weight: bold;
 }
+
 .cards p {
   font-size: 10px;
 }
-.jobs {
-  display: flex;
-  flex-wrap: wrap;
-}
+
 .button-container {
   display: flex;
   justify-content: center;
- margin-top: 20px;
+  margin-top: 20px;
 }
+
 .button-container button {
   border: none;
   width: 50px;
@@ -151,42 +153,46 @@ watch(page, async () => {
   margin: 0 5px;
   cursor: pointer;
 }
+
 .spinner {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-
-.searchBox {
+.searchBox,
+.dropdown {
   display: block;
-  max-width: 50%;
-  margin: 10px auto 10px; /* Adjust the margin-top value */
+  max-width: 100%; /* Adjust the width to fit the container */
+  margin: 10px auto; /* Adjust the margin */
   background-color: #2c3e50;
   border-color: #2c3e50;
   padding: 5px;
   text-align: center;
   font-weight: bold;
-  border-radius: 10px ;
-  border:0 none;
-  padding:10px 20px;
-  background: #eee;
-
-}
-
-.dropdown{
-  display: block;
-  max-width: 50%;
-  margin: 10px auto 10px; /* Adjust the margin-top value */
-  background-color: #2c3e50;
-  border-color: #2c3e50;
-  padding: 5px;
-  text-align: center;
-  font-weight: bold;
-  border-radius: 10px ;
-  border:0 none;
-  padding:10px 20px;
+  border-radius: 10px;
+  border: 0 none;
+  padding: 10px 20px;
   background: #eee;
 }
 
+@media (min-width: 768px) {
+  .container {
+    margin: 0 auto;
+    max-width: 960px; /* Adjust max width based on your design */
+  }
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 1140px; /* Adjust max width based on your design */
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1400px; /* Adjust max width based on your design */
+  }
+}
 </style>
+
