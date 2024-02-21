@@ -13,7 +13,7 @@ const router = createRouter({
         },
         {
             path:"/char/:id",
-            name:"detail",
+            name:"CharacterDetails",
             component: DetailsView
         },
 

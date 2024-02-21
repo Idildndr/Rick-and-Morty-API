@@ -132,6 +132,7 @@ function extractEpisodeIdFromUrl(url) {
           @click="handleRowClick(episodeId)"
         >
           <td>Episode: {{ episodeId }}</td>
+          
         </tr>
       </tbody>
     </table>
