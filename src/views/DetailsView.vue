@@ -1,4 +1,3 @@
-from 'vue';
 <script setup>
 import axios from "axios";
 import { defineProps } from "vue";
@@ -17,9 +16,9 @@ const router = useRouter();
 
 const route = useRoute();
 
-const quizId = parseInt(route.params.id);
+const characterId = parseInt(route.params.id);
 
-console.log(quizId);
+console.log(characterId);
 const char = ref({
   id: null,
   name: null,
@@ -44,28 +43,57 @@ const char = ref({
 const columns = ref([{ title: "Episodes", key: "episode", width: 200 }]);
 
 const data = ref([]);
-const dataTableRef = ref(null); // Create a ref for the n-data-table component
+
+let episodeUrl = ref(0);
 
 onMounted(async () => {
   const response = await axios.get(
-    `https://rickandmortyapi.com/api/character/${quizId}`
+    `https://rickandmortyapi.com/api/character/${characterId}`
   );
 
   char.value.name = response.data.name;
   char.value.image = response.data.image;
   char.value.origin.name = response.data.origin.name;
   char.value.status = response.data.status;
+
   char.value.episode = response.data.episode;
-  char.value.gender = response.data.gender;
-  char.value.species = response.data.species;
 
   const episodes = response.data.episode;
-  data.value = episodes.map(episode => ({ episode }));
+
+  data.value = episodes.map((episode) => extractEpisodeIdFromUrl(episode));
 });
 
+document.body.style.backgroundColor = "rgb(0,0,0)";
 
 
+const handleRowClick = async (episodeId) => {
+  try {
+    console.log("Episode ID:", episodeId);
+  
+    router.push({ name: "EpisodeDetails", params: { id: episodeId } });
+  } catch (error) {
+    console.error("Error navigating to episode:", error);
+  }
+};
 
+
+function extractEpisodeIdFromUrl(url) {
+  // Find the last occurrence of "/"
+  const lastSlashIndex = url.lastIndexOf("/");
+  if (lastSlashIndex !== -1) {
+    // Extract substring after the last "/"
+    const digitsSubstring = url.substring(lastSlashIndex + 1);
+    // Use regular expression to extract digits (one or two)
+    const digits = digitsSubstring.match(/\d{1,2}$/);
+    if (digits) {
+      return digits[0];
+    } else {
+      return null; // No digits found
+    }
+  } else {
+    return null; // No "/" found in the URL
+  }
+}
 </script>
 
 <template>
@@ -84,24 +112,29 @@ onMounted(async () => {
         >
           {{ char.status }}
         </h4>
-        <h4>
-          {{ char.species }}
-          <br>
-          {{ char.origin.name }}
-          <br>
-        {{ char.gender  }}</h4>
-        
+        <h4>{{ char.origin.name }}</h4>
       </div>
     </div>
   </div>
 
   <div class="scroll-container">
-    <n-data-table
-      ref="dataTable"
-      :columns="columns"
-      :data="data"
-      :bordered="false"
-    />
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Episodes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          class="table-item"
+          v-for="(episodeId, index) in data"
+          :key="index"
+          @click="handleRowClick(episodeId)"
+        >
+          <td>Episode: {{ episodeId }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -149,18 +182,13 @@ h2 {
 h4 {
   background: #8b8b8b;
   border-radius: 0.4rem;
-  padding: 15px;
+  padding: 20px;
   color: #fff;
   margin: 16px;
   font-weight: 700;
   white-space: nowrap; /* Prevent text from wrapping */
   overflow: hidden; /* Hide overflow text */
   text-overflow: ellipsis; /* Show ellipsis (...) for overflow text */
-
-}
-
-.status{
-  padding-top: 15px;
 }
 
 .status::before {
@@ -168,7 +196,7 @@ h4 {
   font-size: 1em; /* Keep the font size normal */
   color: #000; /* Color of the dot */
   margin-right: 10px; /* Add some space between the dot and the text */
-  transform: scale(3); /* Scale the dot */
+  transform: scale(2.5); /* Scale the dot */
   display: inline-block; /* Ensure proper positioning of the dot */
   animation: wink 1s infinite alternate; /* Animation for winking */
 }
@@ -183,7 +211,7 @@ h4 {
 }
 
 .status-green::before {
-  color: #8df542; /* Color of the dot when status is 'Alive' */
+  color: green; /* Color of the dot when status is 'Alive' */
 }
 
 .status-red::before {
@@ -197,10 +225,34 @@ h4 {
 .scroll-container {
   width: 80%;
   margin: 0 auto;
-
+  background-color: white;
   width: 50%;
   max-height: 400px; /* Adjust the maximum height of the scrollable container */
   overflow-y: auto; /* Enable vertical scrolling */
   cursor: pointer;
 }
+
+
+th, td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+
+
+th, td {
+  border-bottom: 1px solid #ddd;
+}
+
+table{
+  width: 100%;
+  border-collapse: collapse;
+  tr:hover {background-color: #00ff97;}
+  tr:nth-child(even) {background-color: #f2f2f2;}
+}
+
+
 </style>
+
+

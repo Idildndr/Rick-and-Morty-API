@@ -42,9 +42,9 @@ h3 {
   justify-content: center;
   align-self: center;
   font-weight: bold;
-  font-size: larger;
+  font-size: 20px;
   border-radius: 5px;
-  padding: 15px;
+  padding: 10px;
   max-width: 100%;
   text-align: center;
 }

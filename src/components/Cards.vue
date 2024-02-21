@@ -11,8 +11,6 @@ const search = ref("");
 const selectedStatus = ref("all"); // Initialize selectedStatus to "all"
 const statusOptions = ref([]); // Array to hold status options
 
-
-
 // Fetch all characters data from the API
 const fetchData = async (url) => {
   try {
@@ -37,11 +35,11 @@ const fetchAllCharacters = async (url) => {
 };
 
 (async () => {
-  originalCharacters.value = await fetchAllCharacters("https://rickandmortyapi.com/api/character");
-  characters.value = originalCharacters.value.slice(0, 20); 
+  originalCharacters.value = await fetchAllCharacters(
+    "https://rickandmortyapi.com/api/character"
+  );
+  characters.value = originalCharacters.value.slice(0, 20);
 })();
-
-
 
 // Watch for changes in the search query
 watch(search, () => {
@@ -62,14 +60,14 @@ const filterCharacters = () => {
 
   // Apply status filter to all characters
   if (selectedStatus.value !== "all") {
-    filteredCharacters = filteredCharacters.filter((character) =>
-      character.status.toLowerCase() === selectedStatus.value.toLowerCase()
+    filteredCharacters = filteredCharacters.filter(
+      (character) =>
+        character.status.toLowerCase() === selectedStatus.value.toLowerCase()
     );
   }
 
   characters.value = filteredCharacters.slice(0, 20); // Update the displayed characters based on the search and status filters, but only show characters from the first page
 };
-
 
 watch(page, async () => {
   const res = await axios.get(
@@ -77,16 +75,21 @@ watch(page, async () => {
   );
   characters.value = res.data.results;
 });
-
 </script>
 
 <template>
   <div class="container">
-    <input class="searchBox" v-model.trim="search" type="text" placeholder="search..."  round clearable style="margin-top: 50px !important;"/>
+    <input
+      class="searchBox"
+      v-model.trim="search"
+      type="text"
+      placeholder="search..."
+      round
+      clearable
+      style="margin-top: 50px !important"
+    />
 
-
-
- <select  class="dropdown" v-model="selectedStatus">
+    <select class="dropdown" v-model="selectedStatus">
       <option value="all">All</option>
       <option value="alive">Alive</option>
       <option value="dead">Dead</option>
@@ -94,28 +97,28 @@ watch(page, async () => {
     </select>
 
     <div class="cards">
-      <Card
-        v-for="character in characters"
-        :key="character.id"
-        :image="character.image"
-        :name="character.name"
-        :location="character.location.name"
-        :characterId="character.id"
-      >
-        <div></div>
-      </Card>
+      <TransitionGroup name="card" appear="">
+        <Card
+          v-for="character in characters"
+          :key="character.id"
+          :image="character.image"
+          :name="character.name"
+          :location="character.location.name"
+          :characterId="character.id"
+        >
+          <div></div>
+        </Card>
+      </TransitionGroup>
     </div>
-   
   </div>
 
   <div class="button-container">
-      <button @click="page--">&lt</button>
-      <button @click="page++">></button>
-    </div>
+    <button @click="page--">&lt</button>
+    <button @click="page++">></button>
+  </div>
 </template>
 
 <style scoped>
-
 .container {
   background-color: black;
   color: #2c3e50;
@@ -124,11 +127,15 @@ watch(page, async () => {
 
 .cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Set a minimum width for the cards */
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(250px, 2fr)
+  ); /* Set a minimum width for the cards */
   grid-template-rows: 1fr;
   gap: 5px; /* Add some gap between cards */
   justify-content: center;
   cursor: pointer;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .cards h3 {
@@ -153,26 +160,18 @@ watch(page, async () => {
   margin: 0 5px;
   cursor: pointer;
 }
-
-.spinner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .searchBox,
 .dropdown {
   display: block;
-  max-width: 100%; /* Adjust the width to fit the container */
-  margin: 10px auto; /* Adjust the margin */
+  width: 30%; /* Set the width explicitly */
+  margin: 10px auto; 
   background-color: #2c3e50;
   border-color: #2c3e50;
-  padding: 5px;
+  padding: 10px 20px;
   text-align: center;
   font-weight: bold;
   border-radius: 10px;
   border: 0 none;
-  padding: 10px 20px;
   background: #eee;
 }
 
@@ -195,4 +194,3 @@ watch(page, async () => {
   }
 }
 </style>
-
